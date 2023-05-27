@@ -12,7 +12,7 @@ namespace NZWalks.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
+    // [Authorize]
     public class WalksController : ControllerBase
     {
 
@@ -29,9 +29,11 @@ namespace NZWalks.API.Controllers
         public async Task<ActionResult<IEnumerable<WalkDto>>> GetWalks(
             [FromQuery] string? filterOn, string? filterQuery,
             [FromQuery] string? sortBy, [FromQuery] bool? isAscending,
-            [FromQuery] int pageNumber= 1, [FromQuery] int pageSize = 1000)
+            [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 1000)
         {
 
+            // throw exception for testing ExceptionHandlerMiddleware
+            throw new Exception("Test exception");
             return await walkService.GetAllAsync(filterOn, filterQuery, sortBy, isAscending ?? true, pageNumber, pageSize);
         }
 

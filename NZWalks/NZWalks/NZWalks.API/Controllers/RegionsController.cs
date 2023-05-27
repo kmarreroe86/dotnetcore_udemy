@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NZWalks.API.CustomActionFilters;
@@ -12,9 +13,11 @@ namespace NZWalks.API.Controllers
     {
 
         private readonly IRegionService regionService;
+        private readonly ILogger<RegionsController> logger;
 
-        public RegionsController(IRegionService regionService)
+        public RegionsController(IRegionService regionService, ILogger<RegionsController> logger)
         {
+            this.logger = logger;
             this.regionService = regionService;
         }
 
@@ -23,8 +26,11 @@ namespace NZWalks.API.Controllers
         [Authorize(Roles = "Reader, Writer")]
         public async Task<ActionResult<IEnumerable<RegionDto>>> GetAll()
         {
+            logger.LogInformation("GetAll regions action was called");
+
             var regions = await regionService.GetAllAsync();
 
+            logger.LogInformation($"GetAll regions action end with data: {JsonSerializer.Serialize(regions)}");
             return Ok(regions);
         }
 
