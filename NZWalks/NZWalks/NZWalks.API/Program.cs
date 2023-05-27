@@ -9,12 +9,14 @@ using NZWalks.API.Repositories;
 using NZWalks.API.Services;
 using System.Text;
 using Microsoft.OpenApi.Models;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddHttpContextAccessor();
 
 var connString = builder.Configuration.GetConnectionString("NZWalksConnectionString");
 builder.Services.AddDbContext<NZWalksDbContext>(options => options.UseNpgsql(connString));
@@ -23,7 +25,7 @@ builder.Services.AddDbContext<NZWalksDbContext>(options => options.UseNpgsql(con
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
-    options.SwaggerDoc("V1", new OpenApiInfo { Title = "NZ Walks API", Version = "v1" });
+    // options.SwaggerDoc("V1", new OpenApiInfo { Title = "NZ Walks API", Version = "v1" });
     options.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
     {
         Name = "Authorization",
@@ -61,6 +63,7 @@ builder.Services
 
 builder.Services.AddScoped<IRegionRepository, PostgresRegionRepository>();
 builder.Services.AddScoped<IWalkRepository, PostgresWalkRepository>();
+builder.Services.AddScoped<IImageRepository, ImageRepository>();
 // builder.Services.AddScoped<IRegionRepository, InMemoryRegionRepository>();
 
 builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
@@ -68,6 +71,7 @@ builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
 builder.Services.AddSingleton<ITokenService, TokenService>();
 builder.Services.AddScoped<IRegionService, RegionService>();
 builder.Services.AddScoped<IWalkService, WalkService>();
+builder.Services.AddScoped<IImagesService, ImageService>();
 
 
 // Authentication
@@ -109,13 +113,18 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "NZ Walks API"));
 }
 
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "Images")),
+    RequestPath = "/Images"
+});
 
 app.MapControllers();
 

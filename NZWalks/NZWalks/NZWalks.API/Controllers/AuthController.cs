@@ -13,7 +13,7 @@ namespace NZWalks.API.Controllers
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly ITokenService _tokenService;
-        public AuthController(UserManager<IdentityUser> userManager, ITokenService tokenService = null)
+        public AuthController(UserManager<IdentityUser> userManager, ITokenService tokenService)
         {
             _userManager = userManager;
             _tokenService = tokenService;
@@ -25,20 +25,20 @@ namespace NZWalks.API.Controllers
         {
             var user = new IdentityUser { UserName = request.Username, Email = request.Email };
             var result = await _userManager.CreateAsync(user, request.Password);
-            
+
             if (result.Succeeded)
             {
                 if (request.Roles != null && request.Roles.Any())
                 {
                     result = await _userManager.AddToRolesAsync(user, request.Roles);
                 }
-                
+
                 if (result.Succeeded)
                 {
                     var response = request with { Password = "" };
                     return CreatedAtAction(nameof(Register), new { email = response.Email }, response);
                 }
-                                
+
             }
             foreach (var error in result.Errors)
             {

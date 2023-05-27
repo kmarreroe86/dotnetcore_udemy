@@ -16,6 +16,7 @@ namespace NZWalks.API.Data
         public DbSet<Difficulty> Difficulties { get; set; }
         public DbSet<Region> Regions { get; set; }
         public DbSet<Walk> Walks { get; set; }
+        public DbSet<Image> Images { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -26,7 +27,7 @@ namespace NZWalks.API.Data
             // Seed Roles
             var readerRole = "cfc29908-ecab-4b04-848d-a6796c36d97a";
             var writerRole = "780cd901-4045-4d25-b808-7d28a92b498f";
-            var roles = new List<IdentityRole> { 
+            var roles = new List<IdentityRole> {
                     new IdentityRole
                     {
                         Id = readerRole,

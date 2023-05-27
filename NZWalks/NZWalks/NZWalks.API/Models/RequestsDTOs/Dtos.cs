@@ -95,4 +95,14 @@ namespace NZWalks.API.Models.DTOs
         [DataType(DataType.Password)]
         string Password
         );
+
+
+    public record ImageRequestDto(
+        [Required]
+        IFormFile File,
+
+        [Required]
+        string FileName,
+        string? FileDescription
+    );
 }
