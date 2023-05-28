@@ -24,11 +24,14 @@ var logger = new LoggerConfiguration()
 builder.Logging.ClearProviders();
 builder.Logging.AddSerilog(logger);
 
+
 builder.Services.AddControllers();
 builder.Services.AddHttpContextAccessor();
 
+
 var connString = builder.Configuration.GetConnectionString("NZWalksConnectionString");
 builder.Services.AddDbContext<NZWalksDbContext>(options => options.UseNpgsql(connString));
+
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -62,6 +65,7 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
+
 builder.Services
                 .AddMvc(options =>
                 {
@@ -75,7 +79,9 @@ builder.Services.AddScoped<IWalkRepository, PostgresWalkRepository>();
 builder.Services.AddScoped<IImageRepository, ImageRepository>();
 // builder.Services.AddScoped<IRegionRepository, InMemoryRegionRepository>();
 
+
 builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
+
 
 builder.Services.AddSingleton<ITokenService, TokenService>();
 builder.Services.AddScoped<IRegionService, RegionService>();

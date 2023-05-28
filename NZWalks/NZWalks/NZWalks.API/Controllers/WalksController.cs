@@ -12,7 +12,7 @@ namespace NZWalks.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    // [Authorize]
+    [Authorize]
     public class WalksController : ControllerBase
     {
 
